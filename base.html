@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}CyberFox{% endblock %}</title>
+  <meta name="theme-color" content="#04070d">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Sora:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="{{ url_for('web.dashboard') }}" aria-label="CyberFox dashboard">
+        {% include "_logo.html" %}
+        <span class="brand-text">
+          <strong>CYBERFOX</strong>
+          <small>AI-assisted security detection</small>
+        </span>
+      </a>
+
+      <nav class="nav" aria-label="Main navigation">
+        <a href="{{ url_for('web.dashboard') }}" {% if request.endpoint == 'web.dashboard' %}class="is-active" aria-current="page"{% endif %}>Dashboard</a>
+        <a href="{{ url_for('web.alerts') }}" {% if request.endpoint == 'web.alerts' %}class="is-active" aria-current="page"{% endif %}>Alerts</a>
+        <a href="{{ url_for('web.analyze') }}" {% if request.endpoint in ('web.analyze', 'web.analyze_preview', 'web.analyze_run') %}class="is-active" aria-current="page"{% endif %}>Analyze</a>
+      </nav>
+
+      <span class="mode-chip"><span class="dot"></span>Defensive mode</span>
+    </div>
+  </header>
+
+  <main class="page" id="main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-stack" role="status">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <span>CyberFox · defensive research prototype</span>
+    <span>Analyze synthetic or authorized log data only</span>
+  </footer>
+
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

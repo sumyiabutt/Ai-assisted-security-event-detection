@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+{% block title %}Analyze · CyberFox{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Log ingestion</p>
+    <h1>Analyze security logs</h1>
+    <p class="lede">Upload a CSV of security events, validate it, then run the rule and ML detection engine.</p>
+  </div>
+  {% if state != 'upload' %}
+    <div class="head-actions">
+      <a class="btn btn-ghost" href="{{ url_for('web.analyze') }}">Analyze another file</a>
+    </div>
+  {% endif %}
+</section>
+
+{% if state == 'upload' %}
+<section class="split">
+  <form class="panel upload-panel" id="upload-form" method="post"
+        action="{{ url_for('web.analyze_preview') }}" enctype="multipart/form-data">
+    <div class="panel-head">
+      <h2>Upload a CSV file</h2>
+      <span class="panel-tag">CSV only · max 10 MB</span>
+    </div>
+
+    <label class="dropzone" for="logfile" data-dropzone>
+      {% include "_logo.html" %}
+      <span class="dropzone-title">Drag your log file here</span>
+      <span class="dropzone-sub">or click to browse — <span data-file-name>no file selected</span></span>
+      <input type="file" id="logfile" name="logfile" accept=".csv,text/csv" required>
+    </label>
+
+    <div class="panel-actions">
+      <button class="btn btn-primary" type="submit">Preview data</button>
+      <span class="muted small">The file is validated before anything is analyzed.</span>
+    </div>
+  </form>
+
+  <aside class="panel">
+    <div class="panel-head">
+      <h2>Bundled sample</h2>
+      <span class="panel-tag">2,000 events</span>
+    </div>
+    <p class="muted">
+      A seeded dataset with normal internal traffic and four known attacks: brute force,
+      port scan, request flood and off-hours login.
+    </p>
+    <div class="stack-actions">
+      <form method="post" action="{{ url_for('web.analyze_preview') }}">
+        <input type="hidden" name="sample" value="1">
+        <button class="btn btn-primary btn-block" type="submit">Load sample dataset</button>
+      </form>
+      <a class="btn btn-ghost btn-block" href="{{ url_for('web.sample_download') }}">Download sample CSV</a>
+    </div>
+    <dl class="meta-list">
+      <div><dt>Records</dt><dd>2,000</dd></div>
+      <div><dt>Attack rows</dt><dd>117</dd></div>
+      <div><dt>Format</dt><dd>UTF-8 CSV</dd></div>
+    </dl>
+  </aside>
+</section>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>Required CSV format</h2>
+    <span class="panel-tag">header row required</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Column</th><th>Required</th><th>Allowed values</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="mono">timestamp</td><td>Yes</td><td>YYYY-MM-DD HH:MM:SS</td><td class="mono">2026-03-02 10:10:00</td></tr>
+        <tr><td class="mono">ip</td><td>Yes</td><td>IPv4 or IPv6 address</td><td class="mono">203.0.113.45</td></tr>
+        <tr><td class="mono">user</td><td>Yes</td><td>Any non-empty name</td><td class="mono">admin</td></tr>
+        <tr><td class="mono">event</td><td>Yes</td><td>login · web · conn</td><td class="mono">login</td></tr>
+        <tr><td class="mono">status</td><td>Yes</td><td>success · fail · ok · denied</td><td class="mono">fail</td></tr>
+        <tr><td class="mono">port</td><td>Yes</td><td>1–65535</td><td class="mono">22</td></tr>
+        <tr><td class="mono">bytes</td><td>Yes</td><td>Integer, 0 or more</td><td class="mono">412</td></tr>
+        <tr><td class="mono">label</td><td>No</td><td>1 = attack, 0 = benign (evaluation only)</td><td class="mono">1</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+{% elif state == 'preview' %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>Validation summary — {{ display_name }}</h2>
+    <span class="panel-tag">{{ 'bundled sample' if is_sample else 'uploaded file' }}</span>
+  </div>
+
+  <div class="mini-grid">
+    <div><span>Rows read</span><strong>{{ stats.total_rows|num }}</strong></div>
+    <div><span>Valid events</span><strong class="accent-cyan">{{ stats.valid_rows|num }}</strong></div>
+    <div><span>Rejected rows</span><strong class="{{ 'accent-critical' if stats.invalid_rows else 'accent-cyan' }}">{{ stats.invalid_rows|num }}</strong></div>
+    <div><span>Unique IPs</span><strong>{{ stats.unique_ips }}</strong></div>
+    <div><span>Unique users</span><strong>{{ stats.unique_users }}</strong></div>
+    <div><span>Login failure rate</span><strong>{{ stats.failure_rate|percent }}</strong></div>
+    <div><span>Time range</span><strong class="small-strong">{{ stats.time_start }} → {{ stats.time_end }}</strong></div>
+  </div>
+
+  <form class="panel-actions" method="post" action="{{ url_for('web.analyze_run') }}">
+    <input type="hidden" name="token" value="{{ token }}">
+    <button class="btn btn-primary" type="submit">Analyze logs</button>
+    <a class="btn btn-ghost" href="{{ url_for('web.analyze') }}">Choose another file</a>
+    <span class="muted small">Runs all detection rules and the Isolation Forest model.</span>
+  </form>
+</section>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>Preview — first {{ preview_rows|length }} valid rows</h2>
+    <span class="panel-tag">line numbers match the CSV</span>
+  </div>
+  <div class="table-wrap">
+    <table class="stack">
+      <thead>
+        <tr><th>Line</th><th>Timestamp</th><th>IP</th><th>User</th><th>Event</th><th>Status</th><th>Port</th><th>Bytes</th></tr>
+      </thead>
+      <tbody>
+        {% for row in preview_rows %}
+          <tr>
+            <td class="muted" data-label="Line">{{ row.line_number }}</td>
+            <td class="muted nowrap" data-label="Timestamp">{{ row.timestamp }}</td>
+            <td class="mono" data-label="IP">{{ row.ip }}</td>
+            <td data-label="User">{{ row.user }}</td>
+            <td data-label="Event">{{ row.event }}</td>
+            <td data-label="Status"><span class="status status-{{ row.status }}">{{ row.status }}</span></td>
+            <td data-label="Port">{{ row.port }}</td>
+            <td data-label="Bytes">{{ row.bytes }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>Rejected rows</h2>
+    <span class="panel-tag">{{ invalid_total }} total</span>
+  </div>
+  {% if invalid_rows %}
+    <div class="table-wrap">
+      <table class="stack">
+        <thead><tr><th>Line</th><th>Reason</th></tr></thead>
+        <tbody>
+          {% for row in invalid_rows %}
+            <tr><td class="mono" data-label="Line">{{ row.line_number }}</td><td class="reason" data-label="Reason">{{ row.reason }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if invalid_total > invalid_rows|length %}
+      <p class="footnote">Showing the first {{ invalid_rows|length }} of {{ invalid_total }} rejected rows.</p>
+    {% endif %}
+  {% else %}
+    <p class="empty-note">Every row passed validation.</p>
+  {% endif %}
+</section>
+
+{% elif state == 'result' %}
+<section class="panel result-banner">
+  <div>
+    <p class="eyebrow">Analysis complete</p>
+    <h2>{{ run.filename }}</h2>
+    <p class="muted">Stored {{ run.created_at }} · {{ run.time_start }} → {{ run.time_end }}</p>
+  </div>
+  <div class="head-actions">
+    <a class="btn btn-primary" href="{{ url_for('web.dashboard') }}">Open dashboard</a>
+    <a class="btn btn-ghost" href="{{ url_for('web.alerts', run_id=run.id) }}">View alerts</a>
+  </div>
+</section>
+
+<section class="stats">
+  <article class="card">
+    <p class="card-label">Analyzed events</p>
+    <p class="card-value">{{ run.valid_rows|num }}</p>
+    <p class="card-hint">{{ run.total_rows|num }} rows read · {{ run.invalid_rows|num }} rejected</p>
+  </article>
+  <article class="card">
+    <p class="card-label">Suspicious events</p>
+    <p class="card-value accent-orange">{{ run.suspicious_events|num }}</p>
+    <p class="card-hint">Flagged by rules or ML</p>
+  </article>
+  <article class="card">
+    <p class="card-label">Security alerts</p>
+    <p class="card-value accent-cyan">{{ run.total_alerts|num }}</p>
+    <p class="card-hint">{{ run.rule_alerts }} rule · {{ run.ml_alerts }} ML</p>
+  </article>
+  <article class="card">
+    <p class="card-label">Severity mix</p>
+    <div class="mini-sev">
+      <span class="mini-sev-item"><span class="dot sev-critical"></span>{{ run.critical_count }} Critical</span>
+      <span class="mini-sev-item"><span class="dot sev-high"></span>{{ run.high_count }} High</span>
+      <span class="mini-sev-item"><span class="dot sev-medium"></span>{{ run.medium_count }} Medium</span>
+      <span class="mini-sev-item"><span class="dot sev-low"></span>{{ run.low_count }} Low</span>
+    </div>
+  </article>
+</section>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>Rejected rows</h2>
+    <span class="panel-tag">{{ run.invalid_rows }} total</span>
+  </div>
+  {% if invalid_rows %}
+    <div class="table-wrap">
+      <table class="stack">
+        <thead><tr><th>Line</th><th>Reason</th></tr></thead>
+        <tbody>
+          {% for row in invalid_rows %}
+            <tr><td class="mono" data-label="Line">{{ row.line_number }}</td><td class="reason" data-label="Reason">{{ row.reason }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if run.invalid_rows > invalid_rows|length %}
+      <p class="footnote">Showing the first {{ invalid_rows|length }} of {{ run.invalid_rows }} rejected rows.</p>
+    {% endif %}
+  {% else %}
+    <p class="empty-note">Every row passed validation.</p>
+  {% endif %}
+</section>
+{% endif %}
+{% endblock %}

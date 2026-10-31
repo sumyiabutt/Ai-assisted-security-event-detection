@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{ code }} · CyberFox{% endblock %}
+
+{% block content %}
+<section class="panel empty-state">
+  <p class="eyebrow">Error {{ code }}</p>
+  <h1>{{ message }}</h1>
+  <p class="muted">Check the address, or start again from the dashboard.</p>
+  <div class="head-actions">
+    <a class="btn btn-primary" href="{{ url_for('web.dashboard') }}">Dashboard</a>
+    <a class="btn btn-ghost" href="{{ url_for('web.analyze') }}">Analyze logs</a>
+  </div>
+</section>
+{% endblock %}
