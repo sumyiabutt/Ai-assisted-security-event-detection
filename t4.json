@@ -1,0 +1,247 @@
+{
+  "sha": "95c084878ef1f46a74acfacd9faae6121b73dd3e",
+  "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/trees/95c084878ef1f46a74acfacd9faae6121b73dd3e",
+  "tree": [
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "86442d86e6159bad2ea34cb08b52b0cec52de34a",
+      "size": 113,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/86442d86e6159bad2ea34cb08b52b0cec52de34a"
+    },
+    {
+      "path": "CyberFox_Final_Report.pptx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bcb1303f1344849d831e21a8a8772fda807bb225",
+      "size": 380604,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/bcb1303f1344849d831e21a8a8772fda807bb225"
+    },
+    {
+      "path": "LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6086f7442bff463d60e801c822994b8f88dc96b0",
+      "size": 1067,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/6086f7442bff463d60e801c822994b8f88dc96b0"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "edf8f727c2585132cb32bc1ffb1e8ca271d02f33",
+      "size": 12745,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/edf8f727c2585132cb32bc1ffb1e8ca271d02f33"
+    },
+    {
+      "path": "__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "198bf1da6dc630fffc81632d8c0fd04ccfc1be1c",
+      "size": 443,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/198bf1da6dc630fffc81632d8c0fd04ccfc1be1c"
+    },
+    {
+      "path": "alerts.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b48ea211cc47b18b89e3269adf68f5b6616c489c",
+      "size": 360261,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/b48ea211cc47b18b89e3269adf68f5b6616c489c"
+    },
+    {
+      "path": "analyze-preview.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "18080987e1ac0e89a307ebedd65c5307dab821b5",
+      "size": 307184,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/18080987e1ac0e89a307ebedd65c5307dab821b5"
+    },
+    {
+      "path": "analyze-result.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b0853f566f05fb287331e43f2b1c198b929ef190",
+      "size": 196209,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/b0853f566f05fb287331e43f2b1c198b929ef190"
+    },
+    {
+      "path": "analyze.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8205e9587708ee01bfb14118fc79ace308fbfdb4",
+      "size": 295856,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/8205e9587708ee01bfb14118fc79ace308fbfdb4"
+    },
+    {
+      "path": "app.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "188ce8ed4b156f3b460018e8ac46eefe0abc177e",
+      "size": 1320,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/188ce8ed4b156f3b460018e8ac46eefe0abc177e"
+    },
+    {
+      "path": "dashboard.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ddf462bf939076d2937c602d087fabb2aac141b0",
+      "size": 546865,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/ddf462bf939076d2937c602d087fabb2aac141b0"
+    },
+    {
+      "path": "engine.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e613c627fe0cfc89288d2167d4d354218028f4e9",
+      "size": 2388,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/e613c627fe0cfc89288d2167d4d354218028f4e9"
+    },
+    {
+      "path": "evaluate.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0e1d1e276f2d6b09f9a4e210eae105bfc2bc194c",
+      "size": 4958,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/0e1d1e276f2d6b09f9a4e210eae105bfc2bc194c"
+    },
+    {
+      "path": "favicon.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7d83ef969c5befccc33c5c2dd33b78e475f91d8e",
+      "size": 1074,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/7d83ef969c5befccc33c5c2dd33b78e475f91d8e"
+    },
+    {
+      "path": "generate_dataset.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "275a8ffd1e73e9b8daa8c374c1ce0b0f668d5a05",
+      "size": 7703,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/275a8ffd1e73e9b8daa8c374c1ce0b0f668d5a05"
+    },
+    {
+      "path": "index.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b82a2b732d24abad951a668f4c0756b5cab2e3b",
+      "size": 432,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/7b82a2b732d24abad951a668f4c0756b5cab2e3b"
+    },
+    {
+      "path": "ml_model.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "246777f2f8218f1762d43e2c1e299bf32d7a2082",
+      "size": 6629,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/246777f2f8218f1762d43e2c1e299bf32d7a2082"
+    },
+    {
+      "path": "mobile-alerts.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "10bded13aaf6d865b232feb670107eee40f2d125",
+      "size": 382917,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/10bded13aaf6d865b232feb670107eee40f2d125"
+    },
+    {
+      "path": "mobile-dashboard.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2a785511e1ef324260681affe656fdbcbb037c78",
+      "size": 592428,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/2a785511e1ef324260681affe656fdbcbb037c78"
+    },
+    {
+      "path": "parser.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f3c7ebb3a3b2d67d46dfde0e559c87b3cada68e9",
+      "size": 7676,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/f3c7ebb3a3b2d67d46dfde0e559c87b3cada68e9"
+    },
+    {
+      "path": "report.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a8b823163e826916e0985927e28dab6f024c8ffa",
+      "size": 5280,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/a8b823163e826916e0985927e28dab6f024c8ffa"
+    },
+    {
+      "path": "rules.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0470bc07546c6a5011e52d2aebf14bafafbb3cd0",
+      "size": 7142,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/0470bc07546c6a5011e52d2aebf14bafafbb3cd0"
+    },
+    {
+      "path": "sample_logs.csv",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b6ccd61dec9453e66da04d6326b2e7924c00df2b",
+      "size": 119440,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/b6ccd61dec9453e66da04d6326b2e7924c00df2b"
+    },
+    {
+      "path": "slides.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f994471c5aee3858d7454a948c7c163f8862f1bf",
+      "size": 5140,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/f994471c5aee3858d7454a948c7c163f8862f1bf"
+    },
+    {
+      "path": "style.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ddc73ff74890bd4602dfa514df5e19a6af99e04d",
+      "size": 19069,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/ddc73ff74890bd4602dfa514df5e19a6af99e04d"
+    },
+    {
+      "path": "test_app.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0a59e15e1f2f82e387e632915195ca942742cfdb",
+      "size": 7052,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/0a59e15e1f2f82e387e632915195ca942742cfdb"
+    },
+    {
+      "path": "test_engine.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2d655d80155a1d9f90cc0121af1190ed7c35f314",
+      "size": 3832,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/2d655d80155a1d9f90cc0121af1190ed7c35f314"
+    },
+    {
+      "path": "test_ml.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6375328e9924b39096ff1b980705a6478cb98c76",
+      "size": 4466,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/6375328e9924b39096ff1b980705a6478cb98c76"
+    },
+    {
+      "path": "test_parser.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f77c742fd7f1df5017022519171656e17826fb62",
+      "size": 4541,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/f77c742fd7f1df5017022519171656e17826fb62"
+    },
+    {
+      "path": "test_rules.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dbed983ad4471b3170156087192df2e98ec39f97",
+      "size": 4936,
+      "url": "https://api.github.com/repos/sumyiabutt/ai-assisted-security-event-detection/git/blobs/dbed983ad4471b3170156087192df2e98ec39f97"
+    }
+  ],
+  "truncated": false
+}
