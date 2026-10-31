@@ -9,7 +9,7 @@ Alerts are generated only by the detection engine. Nothing on the dashboard or a
 is hardcoded, and the optional `label` column is used for evaluation only — never for
 detection.
 
-![Dashboard](docs/screenshots/dashboard.png)
+dashboard.png
 
 ## Features
 
