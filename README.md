@@ -13,7 +13,9 @@ detection.
 
 ## Live demo
 
-**[ai-assisted-security-event-detectio.vercel.app](https://ai-assisted-security-event-detectio.vercel.app)**
+**[ai-assisted-security-event-detectio.vercel.app](https://ai-assisted-security-event-detectio.vercel.app)** — auto-deployed from this repository on every push.
+
+**[cyberfox-2.vercel.app](https://cyberfox-2.vercel.app)** — backup deployment of the same build.
 
 The dashboard opens pre-loaded with the bundled sample analysis (2,000 events, 173
 suspicious, 12 alerts). Use **Analyze** to upload `data/sample_logs.csv` and run the full
