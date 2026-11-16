@@ -11,6 +11,14 @@ detection.
 
 ![Dashboard](docs/screenshots/dashboard.png)
 
+## Live demo
+
+**[ai-assisted-security-event-detectio.vercel.app](https://ai-assisted-security-event-detectio.vercel.app)**
+
+The dashboard opens pre-loaded with the bundled sample analysis (2,000 events, 173
+suspicious, 12 alerts). Use **Analyze** to upload `data/sample_logs.csv` and run the full
+pipeline end to end.
+
 ## Features
 
 - **Row-level CSV validation** — required columns, timestamps, IP addresses, ports and
