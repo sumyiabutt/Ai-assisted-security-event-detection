@@ -8,3 +8,8 @@ cyberfox-uploads/
 data/uploads/
 data/_*
 static/_*.png
+
+.vercel
+_uv/
+.qoder-office-pptx-locks/
+docs/_deckpreview/

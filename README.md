@@ -9,7 +9,7 @@ Alerts are generated only by the detection engine. Nothing on the dashboard or a
 is hardcoded, and the optional `label` column is used for evaluation only — never for
 detection.
 
-https://cyberfox-2.vercel.app/dashboard
+![Dashboard](docs/screenshots/dashboard.png)
 
 ## Features
 
@@ -279,3 +279,6 @@ should not be exposed to an untrusted network as-is.
 
 CyberFox is intended for defensive research with synthetic or authorised log data.
 
+## License
+
+MIT — see [LICENSE](LICENSE).

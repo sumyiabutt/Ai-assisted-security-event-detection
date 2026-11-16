@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Alerts · CyberFox{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Detection queue</p>
+    <h1>Security alerts</h1>
+    <p class="lede">
+      {% if run %}
+        Rule and ML alerts for {{ run.filename }} · {{ alerts|length }} shown of {{ total }} total
+      {% else %}
+        No analysis loaded yet.
+      {% endif %}
+    </p>
+  </div>
+  <div class="head-actions">
+    <a class="btn btn-ghost" href="{{ url_for('web.dashboard') }}">Back to dashboard</a>
+  </div>
+</section>
+
+{% if run %}
+<form class="filters panel" method="get" action="{{ url_for('web.alerts') }}" role="search">
+  {% if run.id %}<input type="hidden" name="run_id" value="{{ run.id }}">{% endif %}
+  <div class="field field-grow">
+    <label for="q">Search</label>
+    <input id="q" type="search" name="q" value="{{ filters.q }}" maxlength="120"
+           placeholder="IP, user, reason or MITRE" autocomplete="off">
+  </div>
+  <div class="field">
+    <label for="severity">Severity</label>
+    <select id="severity" name="severity" data-auto-submit>
+      <option value="">All severities</option>
+      {% for severity in ('Critical', 'High', 'Medium', 'Low') %}
+        <option value="{{ severity }}" {% if filters.severity == severity %}selected{% endif %}>{{ severity }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="field">
+    <label for="source">Source</label>
+    <select id="source" name="source" data-auto-submit>
+      <option value="">All sources</option>
+      {% for source in ('Rule', 'ML') %}
+        <option value="{{ source }}" {% if filters.source == source %}selected{% endif %}>{{ source }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="filter-actions">
+    <button class="btn btn-primary" type="submit">Apply</button>
+    <a class="btn btn-ghost" href="{{ url_for('web.alerts', run_id=run.id) }}">Reset</a>
+  </div>
+</form>
+
+<section class="panel">
+  {% if alerts %}
+    <div class="table-wrap">
+      <table class="alerts-table stack">
+        <thead>
+          <tr>
+            <th>Severity</th>
+            <th>Timestamp</th>
+            <th>IP address</th>
+            <th>User</th>
+            <th>Reason</th>
+            <th>Source</th>
+            <th>MITRE</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for alert in alerts %}
+            <tr>
+              <td data-label="Severity"><span class="pill {{ alert.severity|sev_class }}">{{ alert.severity }}</span></td>
+              <td class="muted nowrap" data-label="Timestamp">{{ alert.timestamp }}</td>
+              <td class="mono" data-label="IP address">{{ alert.ip }}</td>
+              <td data-label="User">{{ alert.user }}</td>
+              <td class="reason" data-label="Reason">{{ alert.reason }}</td>
+              <td data-label="Source"><span class="badge">{{ alert.source }}</span></td>
+              <td class="mono" data-label="MITRE">{{ alert.mitre or '—' }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="empty-note">No alerts match these filters.</p>
+  {% endif %}
+</section>
+
+<p class="footnote">
+  Alerts are produced by the detection engine for this run — no hardcoded entries.
+  Rule alerts map to MITRE ATT&amp;CK techniques; ML alerts are behavioural anomalies without a fixed technique.
+</p>
+{% else %}
+<section class="panel empty-state">
+  <h2>No alerts to show</h2>
+  <p class="muted">Analyse a log file first, then return to this page.</p>
+  <a class="btn btn-primary" href="{{ url_for('web.analyze') }}">Analyze logs</a>
+</section>
+{% endif %}
+{% endblock %}

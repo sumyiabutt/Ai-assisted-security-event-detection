@@ -10,7 +10,6 @@ peers instead of claiming an absolute probability of compromise.
 from __future__ import annotations
 
 import pandas as pd
-from sklearn.ensemble import IsolationForest
 
 try:  # package import (app, tests, ``python -m detection.evaluate``)
     from detection.rules import Alert
@@ -139,6 +138,10 @@ def detect_anomalies(
     Returns an empty list when there are too few distinct IPs for the model to
     compare against.
     """
+    # Imported lazily so a cold start that only reads stored results does not
+    # pay sklearn's import cost.
+    from sklearn.ensemble import IsolationForest
+
     features = build_features(events)
     if len(features) < MIN_IPS_FOR_MODEL:
         return []

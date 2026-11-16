@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+cyberfox.db
+cyberfox-uploads/
+data/uploads/
+data/_*
+static/_*.png
+tests/
+docs/

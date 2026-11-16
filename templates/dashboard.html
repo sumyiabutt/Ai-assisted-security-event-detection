@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · CyberFox{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Security overview</p>
+    <h1>Detection dashboard</h1>
+    <p class="lede">
+      {% if run %}
+        {{ run.filename }} · analyzed {{ run.created_at }} · {{ run.time_start }} → {{ run.time_end }}
+      {% else %}
+        No analysis yet. Upload a log file to begin.
+      {% endif %}
+    </p>
+  </div>
+  <div class="head-actions">
+    <a class="btn btn-primary" href="{{ url_for('web.analyze') }}">Analyze logs</a>
+    <a class="btn btn-ghost" href="{{ url_for('web.alerts') }}">View alerts</a>
+  </div>
+</section>
+
+{% if not run %}
+  <section class="panel empty-state">
+    <h2>Nothing analyzed yet</h2>
+    <p class="muted">Upload a CSV of security events, or load the bundled sample dataset, to build the dashboard.</p>
+    <a class="btn btn-primary" href="{{ url_for('web.analyze') }}">Go to Analyze</a>
+  </section>
+{% else %}
+
+<section class="stats" aria-label="Key figures">
+  <article class="card">
+    <p class="card-label">Total log records</p>
+    <p class="card-value">{{ cards.total_rows|num }}</p>
+    <p class="card-hint">{{ run.invalid_rows|num }} rejected during validation</p>
+  </article>
+
+  <article class="card">
+    <p class="card-label">Analyzed events</p>
+    <p class="card-value">{{ cards.valid_rows|num }}</p>
+    <p class="card-hint">{{ run.unique_ips }} unique IPs · {{ run.unique_users }} users</p>
+  </article>
+
+  <article class="card">
+    <p class="card-label">Suspicious events</p>
+    <p class="card-value accent-orange">{{ cards.suspicious_events|num }}</p>
+    <p class="card-hint">
+      {% if cards.valid_rows %}{{ (cards.suspicious_events / cards.valid_rows * 100)|round(1) }}% of analyzed events{% else %}0%{% endif %}
+    </p>
+  </article>
+
+  <article class="card">
+    <p class="card-label">Security alerts</p>
+    <p class="card-value accent-cyan">{{ cards.total_alerts|num }}</p>
+    <div class="mini-sev" aria-label="Alerts by severity">
+      {% for severity in ('Critical', 'High', 'Medium', 'Low') %}
+        <span class="mini-sev-item"><span class="dot {{ severity|sev_class }}"></span>{{ severity_counts[severity] }} {{ severity }}</span>
+      {% endfor %}
+    </div>
+  </article>
+</section>
+
+<section class="grid-2">
+  <article class="panel">
+    <div class="panel-head">
+      <h2>Normal vs suspicious</h2>
+      <span class="panel-tag">{{ cards.valid_rows|num }} events</span>
+    </div>
+    <div class="donut-layout">
+      <div class="donut" style="background: {{ donut.style }};" role="img"
+           aria-label="{{ donut.suspicious }} suspicious events out of {{ cards.valid_rows }} analyzed">
+        <div class="donut-center">
+          <strong>{{ '%.1f'|format(donut.share) }}%</strong>
+          <span>suspicious</span>
+        </div>
+      </div>
+      <ul class="legend">
+        <li><span class="swatch swatch-normal"></span>Normal events <strong>{{ donut.normal|num }}</strong></li>
+        <li><span class="swatch swatch-suspicious"></span>Suspicious events <strong>{{ donut.suspicious|num }}</strong></li>
+        <li class="legend-note">Flagged by at least one rule or the Isolation Forest model.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="panel">
+    <div class="panel-head">
+      <h2>Events by hour</h2>
+      <span class="panel-tag">24h view</span>
+    </div>
+    <div class="chart-box">
+      <canvas id="hourly-chart" aria-label="Events per hour of day" role="img"></canvas>
+    </div>
+  </article>
+</section>
+
+<section class="grid-2">
+  <article class="panel">
+    <div class="panel-head">
+      <h2>Suspicious sources</h2>
+      <span class="panel-tag">top {{ sources|length }}</span>
+    </div>
+    {% if sources %}
+      <div class="table-wrap">
+        <table class="stack">
+          <thead>
+            <tr><th>IP address</th><th>Severity</th><th>Alerts</th><th>Detected by</th><th>Last seen</th></tr>
+          </thead>
+          <tbody>
+            {% for source in sources %}
+              <tr>
+                <td class="mono" data-label="IP address">{{ source.ip }}</td>
+                <td data-label="Severity"><span class="pill {{ source.severity|sev_class }}">{{ source.severity }}</span></td>
+                <td data-label="Alerts">{{ source.alert_count }}</td>
+                <td data-label="Detected by"><span class="badge">{{ source.sources }}</span></td>
+                <td class="muted" data-label="Last seen">{{ source.last_seen }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="muted empty-note">No alerts fired for this run.</p>
+    {% endif %}
+  </article>
+
+  <article class="panel">
+    <div class="panel-head">
+      <h2>Suspicious login attempts</h2>
+      <span class="panel-tag">latest {{ failed_logins|length }}</span>
+    </div>
+    {% if failed_logins %}
+      <div class="table-wrap">
+        <table class="stack">
+          <thead>
+            <tr><th>Timestamp</th><th>IP address</th><th>User</th><th>Status</th><th>Detected by</th></tr>
+          </thead>
+          <tbody>
+            {% for event in failed_logins %}
+              <tr>
+                <td class="muted" data-label="Timestamp">{{ event.timestamp }}</td>
+                <td class="mono" data-label="IP address">{{ event.ip }}</td>
+                <td data-label="User">{{ event.user }}</td>
+                <td data-label="Status"><span class="status status-{{ event.status }}">{{ event.status }}</span></td>
+                <td data-label="Detected by"><span class="badge">{{ event.alert_source }}</span></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="muted empty-note">No suspicious logins in this run.</p>
+    {% endif %}
+  </article>
+</section>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>Recent security events</h2>
+    <a class="panel-link" href="{{ url_for('web.alerts', run_id=run.id) }}">All alerts →</a>
+  </div>
+  {% if recent_alerts %}
+    <div class="table-wrap">
+      <table class="stack">
+        <thead>
+          <tr><th>Severity</th><th>Timestamp</th><th>IP address</th><th>Reason</th><th>Source</th><th>MITRE</th></tr>
+        </thead>
+        <tbody>
+          {% for alert in recent_alerts %}
+            <tr>
+              <td data-label="Severity"><span class="pill {{ alert.severity|sev_class }}">{{ alert.severity }}</span></td>
+              <td class="muted" data-label="Timestamp">{{ alert.timestamp }}</td>
+              <td class="mono" data-label="IP address">{{ alert.ip }}</td>
+              <td class="reason" data-label="Reason">{{ alert.reason }}</td>
+              <td data-label="Source"><span class="badge">{{ alert.source }}</span></td>
+              <td class="mono" data-label="MITRE">{{ alert.mitre or '—' }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="muted empty-note">No alerts for this run.</p>
+  {% endif %}
+</section>
+
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if run %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  const hourly = {{ hourly|tojson }};
+  const chartCanvas = document.getElementById('hourly-chart');
+  if (chartCanvas && window.Chart) {
+    new Chart(chartCanvas, {
+      type: 'bar',
+      data: {
+        labels: hourly.labels,
+        datasets: [
+          {
+            label: 'All events',
+            data: hourly.events,
+            backgroundColor: 'rgba(63, 208, 255, 0.28)',
+            borderColor: 'rgba(63, 208, 255, 0.75)',
+            borderWidth: 1,
+            borderRadius: 3
+          },
+          {
+            label: 'Suspicious',
+            data: hourly.suspicious,
+            type: 'line',
+            borderColor: '#ff7a2f',
+            backgroundColor: '#ff7a2f',
+            pointRadius: 2,
+            pointHoverRadius: 4,
+            borderWidth: 2,
+            tension: 0.35
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: {
+            labels: { color: '#8a9bb8', boxWidth: 10, boxHeight: 10, usePointStyle: true }
+          },
+          tooltip: {
+            backgroundColor: '#0b121d',
+            borderColor: '#18263d',
+            borderWidth: 1,
+            titleColor: '#e6edf7',
+            bodyColor: '#8a9bb8'
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(24, 38, 61, 0.55)' },
+            ticks: { color: '#8a9bb8', maxRotation: 0, autoSkip: true, maxTicksLimit: 12 }
+          },
+          y: {
+            beginAtZero: true,
+            grid: { color: 'rgba(24, 38, 61, 0.55)' },
+            ticks: { color: '#8a9bb8', precision: 0 }
+          }
+        }
+      }
+    });
+  }
+</script>
+{% endif %}
+{% endblock %}
